@@ -5,6 +5,18 @@ admin.initializeApp();
 
 exports.deleteUser = functions.https.onRequest(
     async (request, response) => {
+      response.set("Access-Control-Allow-Origin", "*");
+      // response.set("Access-Control-Allow-Origin", "https://sales-force.netlify.app");
+      response.setHeader("Access-Control-Allow-Headers",
+          "Content-Type, Access-Control-Allow-Headers, " +
+          "Authorization, X-Requested-With");
+      response.set("Access-Control-Allow-Methods", "GET, POST");
+
+      if (request.method === "OPTIONS") {
+        // stop preflight requests here
+        response.status(204).send("");
+        return;
+      }
       const userID = request.body.uid;
 
       admin.auth().deleteUser(userID).then(()=>{
