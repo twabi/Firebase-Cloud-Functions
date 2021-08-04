@@ -6,7 +6,6 @@ admin.initializeApp();
 exports.deleteUser = functions.https.onRequest(
     async (request, response) => {
       response.set("Access-Control-Allow-Origin", "*");
-      // response.set("Access-Control-Allow-Origin", "https://sales-force.netlify.app");
       response.setHeader("Access-Control-Allow-Headers",
           "Content-Type, Access-Control-Allow-Headers, " +
           "Authorization, X-Requested-With");
@@ -26,4 +25,32 @@ exports.deleteUser = functions.https.onRequest(
         console.log("unable to delete user");
         response.status(500).send("Failed to delete User : " + error.message);
       });
+    });
+
+
+exports.getUserDetails = functions.https.onRequest(
+    async (request, response) => {
+      response.set("Access-Control-Allow-Origin", "*");
+      response.setHeader("Access-Control-Allow-Headers",
+          "Content-Type, Access-Control-Allow-Headers, " +
+          "Authorization, X-Requested-With");
+      response.set("Access-Control-Allow-Methods", "GET, POST");
+
+      if (request.method === "OPTIONS") {
+        // stop preflight requests here
+        response.status(204).send("");
+        return;
+      }
+      const userID = request.body.uid;
+
+      admin.auth().getUser(userID)
+          .then((userRecord) => {
+            console.log(`Successfully fetched user data: 
+            ${userRecord.toJSON()}`);
+            response.status(200).send(userRecord.toJSON());
+          })
+          .catch((error) => {
+            console.log("Error fetching user data:", error);
+            response.status(500).send("Failed to get User : " + error.message);
+          });
     });
