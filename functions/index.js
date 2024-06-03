@@ -137,7 +137,7 @@ exports.getQuotation = functions.https.onRequest(async (request, response) => {
       );
       response.setHeader(
           "Content-Disposition",
-          "attachment; filename=Quotation.xlsx"
+          `attachment; filename=${fileName}.xlsx`
       );
       response.send(data);
     } catch (error) {
