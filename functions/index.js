@@ -85,13 +85,22 @@ exports.getQuotation = functions.https.onRequest(async (request, response) => {
 
   const productList = request.body.products;
   const date = request.body.date;
-  const customer = request.body.customer;
+  const client = request.body.customer;
   const quoteNumber = request.body.quotationNumber;
   const quoteType = request.body.quoteType;
+  const repName = request.body.repName;
+  const repPhone = request.body.repPhone;
+  const repEmail = request.body.repEmail;
+  const clientPhone = request.body.clientPhone;
+  const clientEmail = request.body.clientEmail;
+  const location = request.body.location;
+  const contactName = request.body.contactName;
+  const company = request.body.company;
 
   let fileName = "";
     quoteType.toLowerCase() === "invoice" ?
         fileName = "INVOICE" : fileName = "QUOTATION";
+    company ? fileName = fileName + "-" + company : null;
 
     try {
       const templateBuffer =
@@ -110,17 +119,24 @@ exports.getQuotation = functions.https.onRequest(async (request, response) => {
       const values = {
         quoteType: quoteType,
         date: date,
-        customer: customer,
+        customer: client,
+        clientPhone: clientPhone,
+        clientEmail: clientEmail,
+        repName: repName,
+        repEmail: repEmail,
+        repPhone: repPhone,
+        location: location,
+        contactName: contactName,
         quotationNumber: quoteNumber,
         item:
-            productList
-                .map((product, index) => ({ // Map products for the template
-                  no: index + 1,
-                  description: product.description,
-                  specs: product.specs,
-                  price: product.price,
-                  quantity: product.quantity,
-                })),
+              productList
+                  .map((product, index) => ({ // Map products for the template
+                    key: index + 1,
+                    description: product.description,
+                    code: product.code,
+                    price: product.price,
+                    quantity: product.quantity,
+                  })),
       };
 
       console.log(values);
