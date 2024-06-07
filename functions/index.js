@@ -134,8 +134,8 @@ exports.getQuotation = functions.https.onRequest(async (request, response) => {
                     key: index + 1,
                     description: product.description,
                     code: product.code,
-                    price: product.price,
-                    quantity: product.quantity,
+                    price: parseFloat(product.price),
+                    quantity: parseFloat(product.quantity),
                   })),
       };
 
